@@ -7,74 +7,76 @@ export const WhyZooko = () => {
         {/* Header */}
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            Why Zooko
+            Nima uchun Zooko
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            Because good education is built on clarity, practice, and care.
+            Zooko o'quvchilarga kompyuterlar, mantiq va dasturlashni sodda va
+            qiziqarli tarzda o‘rgatadi. Har bir dars o‘yinga, real misollarga va
+            o‘quvchining darajasiga mos keladi.
           </p>
         </div>
 
-        {/* Reasons */}
+        {/* Topics */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* Reason 1 */}
+          {/* Clear Explanation */}
           <Card className="rounded-3xl bg-white shadow-sm">
             <CardContent className="p-8">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-xl">
                 🎯
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Clear Explanations
+                Aniqlik bilan tushuntirish
               </h3>
               <p className="mt-3 text-gray-600">
-                Informatics explained step by step, using simple language that
-                pupils understand.
+                Har bir mavzu o‘quvchiga sodda, tushunarli va bosqichma-bosqich
+                tushuntiriladi.
               </p>
             </CardContent>
           </Card>
 
-          {/* Reason 2 */}
+          {/* Learning Through Games */}
           <Card className="rounded-3xl bg-white shadow-sm">
             <CardContent className="p-8">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-xl">
                 🎮
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Learning Through Play
+                O‘yinda o‘rganish
               </h3>
               <p className="mt-3 text-gray-600">
-                Games are used with purpose — to teach thinking, not just
-                clicking.
+                O‘quvchilar o‘yinalar orqali masalalarni hal qilish va
+                mavzularni o‘rganadi.
               </p>
             </CardContent>
           </Card>
 
-          {/* Reason 3 */}
+          {/* Structured Lessons */}
           <Card className="rounded-3xl bg-white shadow-sm">
             <CardContent className="p-8">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-xl">
                 📚
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Structured Lessons
+                Tuzilgan darslar
               </h3>
               <p className="mt-3 text-gray-600">
-                Each lesson follows a proven educational structure, building
-                real understanding.
+                Har bir dars o‘quvchining darajasiga mos tuzilgan va tartibli
+                o‘rganishga yordam beradi.
               </p>
             </CardContent>
           </Card>
 
-          {/* Reason 4 */}
           <Card className="rounded-3xl bg-white shadow-sm">
             <CardContent className="p-8">
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 text-xl">
                 🧠
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Thinking First
+                Mantiq va fikrlash
               </h3>
               <p className="mt-3 text-gray-600">
-                Zooko focuses on logic and problem-solving, not memorization.
+                Zooko o‘quvchilarni mantiqiy fikrlash va muammolarni hal
+                qilishga o‘rgatadi.
               </p>
             </CardContent>
           </Card>

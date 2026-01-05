@@ -1,20 +1,38 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const DashboardPage = () => {
-  // Random user data for demo
+  const router = useRouter();
+
+  // Random user data
   const user = {
     name: "Alex",
     avatar: "https://i.pravatar.cc/150?img=3",
     progress: 45,
     subjects: [
-      { title: "Computer Basics", icon: "💻", progress: 70 },
-      { title: "Algorithms & Logic", icon: "🧠", progress: 30 },
-      { title: "Coding with Games", icon: "🎮", progress: 50 },
-      { title: "Internet & Safety", icon: "🌐", progress: 20 },
+      { id: "python", title: "Python Basics", icon: "🐍", progress: 50 },
+      {
+        id: "algorithms-logic",
+        title: "Algorithms & Logic",
+        icon: "🧠",
+        progress: 30,
+      },
+      {
+        id: "coding-games",
+        title: "Coding with Games",
+        icon: "🎮",
+        progress: 70,
+      },
+      {
+        id: "internet-safety",
+        title: "Internet & Safety",
+        icon: "🌐",
+        progress: 20,
+      },
     ],
   };
 
@@ -64,7 +82,6 @@ const DashboardPage = () => {
       <main className="flex-1 px-8 py-10 overflow-y-auto">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">{activeItem}</h1>
 
-        {/* Only show dashboard content if Dashboard is active */}
         {activeItem === "Dashboard" && (
           <div className="space-y-10">
             {/* Overall Progress */}
@@ -92,7 +109,7 @@ const DashboardPage = () => {
               </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {user.subjects.map((subject) => (
-                  <Card key={subject.title} className="rounded-3xl shadow-sm">
+                  <Card key={subject.id} className="rounded-3xl shadow-sm">
                     <CardHeader className="text-center">
                       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white text-xl">
                         {subject.icon}
@@ -111,25 +128,16 @@ const DashboardPage = () => {
                       <p className="mt-2 text-sm text-gray-600">
                         {subject.progress}% completed
                       </p>
-                      <Button className="mt-4 w-full" size="sm">
+                      <Button
+                        className="mt-4 w-full"
+                        size="sm"
+                        onClick={() => router.push(`/dashboard/${subject.id}`)}
+                      >
                         Continue
                       </Button>
                     </CardContent>
                   </Card>
                 ))}
-              </div>
-            </section>
-
-            {/* Quick Actions */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                Quick Actions
-              </h2>
-              <div className="flex flex-wrap gap-4">
-                <Button>Start New Lesson</Button>
-                <Button variant="outline">View Badges</Button>
-                <Button variant="outline">Check Progress</Button>
-                <Button variant="outline">Settings</Button>
               </div>
             </section>
           </div>

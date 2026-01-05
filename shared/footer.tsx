@@ -14,35 +14,35 @@ export const Footer = () => {
               <span className="text-xl font-semibold text-gray-900">Zooko</span>
             </div>
             <p className="text-gray-600 text-sm">
-              Interactive informatics learning for pupils, built with care,
-              structure, and real understanding.
+              Zooko — bu o‘quvchilar uchun interaktiv informatika darslari,
+              sodda, tushunarli va qiziqarli tarzda.
             </p>
           </div>
 
           {/* Navigation */}
           <div>
             <h4 className="mb-4 text-sm font-semibold text-gray-900">
-              Navigation
+              Sayt bo‘limlari
             </h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>
                 <Link href="/" className="hover:text-primary transition">
-                  Home
+                  Bosh sahifa
                 </Link>
               </li>
               <li>
                 <Link href="/learn" className="hover:text-primary transition">
-                  Learn
+                  O‘rganish
                 </Link>
               </li>
               <li>
                 <Link href="/games" className="hover:text-primary transition">
-                  Games
+                  O‘yinlar
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-primary transition">
-                  About
+                  Biz haqimizda
                 </Link>
               </li>
             </ul>
@@ -51,7 +51,7 @@ export const Footer = () => {
           {/* For Parents */}
           <div>
             <h4 className="mb-4 text-sm font-semibold text-gray-900">
-              For Parents
+              Ota-onalar uchun
             </h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>
@@ -59,12 +59,12 @@ export const Footer = () => {
                   href="/for-parents"
                   className="hover:text-primary transition"
                 >
-                  How It Works
+                  Qanday ishlaydi
                 </Link>
               </li>
               <li>
                 <Link href="/safety" className="hover:text-primary transition">
-                  Safety & Privacy
+                  Xavfsizlik
                 </Link>
               </li>
               <li>
@@ -72,7 +72,7 @@ export const Footer = () => {
                   href="/progress"
                   className="hover:text-primary transition"
                 >
-                  Progress Tracking
+                  Rivojlanishni kuzatish
                 </Link>
               </li>
             </ul>
@@ -80,24 +80,21 @@ export const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-gray-900">
-              Contact
-            </h4>
+            <h4 className="mb-4 text-sm font-semibold text-gray-900">Aloqa</h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>Email: support@zooko.app</li>
-              <li>Phone: +998 00 000 00 00</li>
+              <li>Telefon: +998 00 000 00 00</li>
               <li>
                 <Link href="/contact" className="hover:text-primary transition">
-                  Contact Form
+                  Kontakt formasi
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom */}
         <div className="mt-12 border-t pt-6 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Zooko. All rights reserved.
+          © {new Date().getFullYear()} Zooko. Barcha huquqlar himoyalangan.
         </div>
       </div>
     </footer>

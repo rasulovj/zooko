@@ -13,28 +13,25 @@ export const Navbar = () => {
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
-          <Link href="/" className="hover:text-primary transition">
-            Home
-          </Link>
           <Link href="/learn" className="hover:text-primary transition">
-            Learn
+            O'rganish
           </Link>
           <Link href="/games" className="hover:text-primary transition">
-            Games
+            O'yinlar
           </Link>
           <Link href="/about" className="hover:text-primary transition">
-            About
+            Biz haqimizda
           </Link>
           <Link href="/contact" className="hover:text-primary transition">
-            Contact
+            Bog'lanish
           </Link>
         </nav>
 
         <div className="flex items-center gap-3">
           <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
+            <Link href="/login">Kirish</Link>
           </Button>
-          <Button>Register</Button>
+          <Button>Ro'yxatdan o'tish</Button>
         </div>
       </div>
     </header>

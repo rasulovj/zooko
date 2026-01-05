@@ -18,7 +18,7 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please enter email and password");
+      alert("Iltimos, email va parolni kiriting");
       return;
     }
 
@@ -27,7 +27,7 @@ const LoginPage = () => {
     setTimeout(() => {
       setLoading(false);
 
-      router.push("/");
+      router.push("/dashboard"); // Dashboard sahifasiga yo'naltirish
     }, 1200);
   };
 
@@ -39,10 +39,10 @@ const LoginPage = () => {
             Z
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Welcome Back
+            Xush kelibsiz
           </CardTitle>
           <p className="mt-2 text-sm text-gray-600">
-            Log in to continue learning with Zooko
+            Zooko bilan o‘rganishni davom ettirish uchun tizimga kiring
           </p>
         </CardHeader>
 
@@ -53,7 +53,7 @@ const LoginPage = () => {
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="siz@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -61,7 +61,7 @@ const LoginPage = () => {
 
           {/* Password */}
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Parol</Label>
             <Input
               id="password"
               type="password"
@@ -71,43 +71,14 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Forgot password */}
-          <div className="text-right">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
-
-          {/* Login button */}
           <Button
             className="w-full"
             size="lg"
             onClick={handleLogin}
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Kirish..." : "Kirish"}
           </Button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-xs text-gray-400">or</span>
-            <div className="h-px flex-1 bg-gray-200" />
-          </div>
-
-          {/* Register link */}
-          <p className="text-center text-sm text-gray-600">
-            Don’t have an account?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-primary hover:underline"
-            >
-              Register
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>
