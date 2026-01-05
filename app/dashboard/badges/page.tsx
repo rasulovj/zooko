@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip } from "@/components/ui/tooltip"; // optional, if you have a tooltip component
+import { Tooltip } from "@/components/ui/tooltip"; // agar tooltip komponenti bo'lsa
 import { Button } from "@/components/ui/button";
 
 interface Badge {
@@ -17,29 +17,29 @@ export const BadgesPage = () => {
   const [badges, setBadges] = useState<Badge[]>([
     {
       id: "beginner",
-      title: "Beginner",
-      description: "Complete your first lesson",
+      title: "Boshlovchi",
+      description: "Birinchi darsni yakunlang",
       icon: "🏅",
       unlocked: true,
     },
     {
       id: "quiz_master",
-      title: "Quiz Master",
-      description: "Score 100% on a quiz",
+      title: "Quiz Ustasi",
+      description: "Testdan 100% natija oling",
       icon: "🧠",
       unlocked: false,
     },
     {
       id: "coder",
-      title: "Coder",
-      description: "Submit 10 coding exercises",
+      title: "Kodlovchi",
+      description: "10 ta kodlash topshirig‘ini bajaring",
       icon: "💻",
       unlocked: true,
     },
     {
       id: "python_pro",
       title: "Python Pro",
-      description: "Complete Python Basics course",
+      description: "Python Asoslari kursini yakunlang",
       icon: "🐍",
       unlocked: false,
     },
@@ -47,9 +47,12 @@ export const BadgesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 px-8 py-10">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Your Badges</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">
+        Sizning Belgilaringiz
+      </h1>
       <p className="mb-8 text-gray-600">
-        Collect badges by completing lessons, quizzes, and coding exercises.
+        Darslar, testlar va kodlash topshiriqlarini bajarganingizda belgilar
+        to‘plang.
       </p>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -71,17 +74,17 @@ export const BadgesPage = () => {
                 variant="outline"
                 disabled
               >
-                Locked
+                Qulflangan
               </Button>
             )}
           </Card>
         ))}
       </div>
 
-      {/* Optional: show total badges progress */}
+      {/* Umumiy belgilar progressi */}
       <div className="mt-10">
         <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-          Badge Completion
+          Belgilarni Yakunlash
         </h2>
         <div className="w-full bg-gray-200 rounded-full h-4">
           <div
@@ -94,8 +97,8 @@ export const BadgesPage = () => {
           ></div>
         </div>
         <p className="mt-2 text-sm text-gray-600">
-          {badges.filter((b) => b.unlocked).length} / {badges.length} badges
-          unlocked
+          {badges.filter((b) => b.unlocked).length} / {badges.length} belgi
+          ochilgan
         </p>
       </div>
     </div>

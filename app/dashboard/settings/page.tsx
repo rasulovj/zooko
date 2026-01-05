@@ -24,21 +24,21 @@ export const SettingsPage = () => {
 
   const handleSave = () => {
     if (password && password !== confirmPassword) {
-      alert("Passwords do not match!");
+      alert("Parollar mos kelmadi!");
       return;
     }
-    // Save logic (API call)
-    alert("Settings saved!");
+    // Saqlash logikasi (API chaqiruv)
+    alert("Sozlamalar saqlandi!");
   };
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto py-10">
-      <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+      <h1 className="text-3xl font-bold text-gray-900">Sozlamalar</h1>
 
-      {/* Profile Settings */}
+      {/* Profil Sozlamalari */}
       <Card className="rounded-3xl shadow-sm">
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <CardTitle>Profil</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center gap-6">
@@ -49,7 +49,7 @@ export const SettingsPage = () => {
             />
             <div>
               <label className="block mb-2 font-medium text-gray-700">
-                Update Avatar
+                Avatarni yangilash
               </label>
               <Input
                 type="file"
@@ -61,7 +61,7 @@ export const SettingsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block mb-1 font-medium text-gray-700">
-                Name
+                Ism
               </label>
               <Input value={name} onChange={(e) => setName(e.target.value)} />
             </div>
@@ -79,20 +79,20 @@ export const SettingsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Password Settings */}
+      {/* Parolni o‘zgartirish */}
       <Card className="rounded-3xl shadow-sm">
         <CardHeader>
-          <CardTitle>Change Password</CardTitle>
+          <CardTitle>Parolni o‘zgartirish</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Input
-            placeholder="New Password"
+            placeholder="Yangi parol"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <Input
-            placeholder="Confirm Password"
+            placeholder="Parolni tasdiqlash"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -100,28 +100,28 @@ export const SettingsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Preferences */}
+      {/* Afzalliklar */}
       <Card className="rounded-3xl shadow-sm">
         <CardHeader>
-          <CardTitle>Preferences</CardTitle>
+          <CardTitle>Afzalliklar</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span>Enable Notifications</span>
+            <span>Bildirishnomalarni yoqish</span>
             <Switch
               checked={notificationsEnabled}
               onCheckedChange={setNotificationsEnabled}
             />
           </div>
           <div className="flex items-center justify-between">
-            <span>Dark Mode</span>
+            <span>Tungi rejim</span>
             <Switch checked={darkMode} onCheckedChange={setDarkMode} />
           </div>
         </CardContent>
       </Card>
 
       <Button onClick={handleSave} className="mt-2 w-full md:w-40">
-        Save Changes
+        O‘zgarishlarni saqlash
       </Button>
     </div>
   );

@@ -8,22 +8,22 @@ const DashboardPage = () => {
   const user = {
     progress: 45,
     subjects: [
-      { id: "python", title: "Python Basics", icon: "🐍", progress: 50 },
+      { id: "python", title: "Python Asoslari", icon: "🐍", progress: 50 },
       {
         id: "algorithms-logic",
-        title: "Algorithms & Logic",
+        title: "Algoritmlar & Mantiq",
         icon: "🧠",
         progress: 30,
       },
       {
         id: "coding-games",
-        title: "Coding with Games",
+        title: "O‘yinlar bilan Kodlash",
         icon: "🎮",
         progress: 70,
       },
       {
         id: "internet-safety",
-        title: "Internet & Safety",
+        title: "Internet Xavfsizligi",
         icon: "🌐",
         progress: 20,
       },
@@ -36,21 +36,19 @@ const DashboardPage = () => {
     <div className="space-y-10 pt-[64px]">
       <Card className="rounded-3xl shadow-sm">
         <CardContent className="space-y-3">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Overall Progress
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Umumiy Natija</h2>
           <div className="w-full bg-gray-200 rounded-full h-4">
             <div
               className="h-4 rounded-full bg-primary"
               style={{ width: `${user.progress}%` }}
             ></div>
           </div>
-          <p className="text-sm text-gray-600">{user.progress}% completed</p>
+          <p className="text-sm text-gray-600">{user.progress}% bajarildi</p>
         </CardContent>
       </Card>
 
       <section>
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Your Subjects</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Fanlaringiz</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {user.subjects.map((subject) => (
             <Card key={subject.id} className="rounded-3xl shadow-sm">
@@ -70,14 +68,14 @@ const DashboardPage = () => {
                   ></div>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
-                  {subject.progress}% completed
+                  {subject.progress}% bajarildi
                 </p>
                 <Button
                   className="mt-4 w-full"
                   size="sm"
-                  onClick={() => router.push(`/dashboard/python`)}
+                  onClick={() => router.push(`/dashboard/${subject.id}`)}
                 >
-                  Continue
+                  Davom etish
                 </Button>
               </CardContent>
             </Card>

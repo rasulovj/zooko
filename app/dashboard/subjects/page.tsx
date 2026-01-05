@@ -7,41 +7,41 @@ import { Button } from "@/components/ui/button";
 const subjects = [
   {
     id: "python",
-    title: "Python Basics",
+    title: "Python Asoslari",
     icon: "🐍",
-    description: "Learn Python from scratch",
+    description: "Pythonni boshidan o‘rganing",
     image:
-      "https://images.unsplash.com/photo-1649180556628-9ba704115795?q=80&w=2324&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // direct link
+      "https://images.unsplash.com/photo-1649180556628-9ba704115795?q=80&w=2324&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "web-intro",
-    title: "Intro to Web",
+    title: "Veb Dasturlash Kirish",
     icon: "🌐",
-    description: "HTML, CSS & JS basics",
+    description: "HTML, CSS va JS asoslari",
     image:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2372&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "algorithms-logic",
-    title: "Algorithms & Logic",
+    title: "Algoritmlar va Mantiq",
     icon: "🧠",
-    description: "Problem-solving skills",
+    description: "Muammo yechish ko‘nikmalari",
     image:
       "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "coding-games",
-    title: "Coding with Games",
+    title: "O‘yinlar orqali dasturlash",
     icon: "🎮",
-    description: "Learn coding with fun games",
+    description: "Kodlashni qiziqarli o‘yinlar bilan o‘rganing",
     image:
       "https://plus.unsplash.com/premium_photo-1664908294339-ed02fdc1b806?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "internet-safety",
-    title: "Internet Safety",
+    title: "Internet Xavfsizligi",
     icon: "🔒",
-    description: "Stay safe online",
+    description: "Onlayn xavfsizlikni o‘rganing",
     image:
       "https://plus.unsplash.com/premium_photo-1683836722608-60ab4d1b58e5?q=80&w=2224&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
@@ -52,7 +52,7 @@ export const SubjectsPage = () => {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900">Subjects</h1>
+      <h1 className="text-3xl font-bold text-gray-900">Fanlar</h1>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {subjects.map((subject) => (
@@ -60,7 +60,7 @@ export const SubjectsPage = () => {
             key={subject.id}
             className="relative rounded-3xl shadow-lg overflow-hidden hover:scale-105 transition-transform"
           >
-            {/* Background Image */}
+            {/* Fon rasmi */}
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${subject.image})` }}
@@ -80,7 +80,7 @@ export const SubjectsPage = () => {
                 className="w-full bg-white text-gray-900 hover:bg-gray-200"
                 onClick={() => router.push(`/dashboard/subjects/${subject.id}`)}
               >
-                Start Learning
+                O‘rganishni boshlash
               </Button>
             </CardContent>
           </Card>
