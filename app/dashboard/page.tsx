@@ -33,7 +33,7 @@ const DashboardPage = () => {
   const router = useRouter();
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 pt-[64px]">
       <Card className="rounded-3xl shadow-sm">
         <CardContent className="space-y-3">
           <h2 className="text-lg font-semibold text-gray-900">

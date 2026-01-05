@@ -10,30 +10,40 @@ const subjects = [
     title: "Python Basics",
     icon: "🐍",
     description: "Learn Python from scratch",
+    image:
+      "https://images.unsplash.com/photo-1649180556628-9ba704115795?q=80&w=2324&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // direct link
   },
   {
     id: "web-intro",
     title: "Intro to Web",
     icon: "🌐",
     description: "HTML, CSS & JS basics",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2372&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "algorithms-logic",
     title: "Algorithms & Logic",
     icon: "🧠",
     description: "Problem-solving skills",
+    image:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "coding-games",
     title: "Coding with Games",
     icon: "🎮",
     description: "Learn coding with fun games",
+    image:
+      "https://plus.unsplash.com/premium_photo-1664908294339-ed02fdc1b806?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: "internet-safety",
     title: "Internet Safety",
     icon: "🔒",
     description: "Stay safe online",
+    image:
+      "https://plus.unsplash.com/premium_photo-1683836722608-60ab4d1b58e5?q=80&w=2224&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
 ];
 
@@ -48,23 +58,26 @@ export const SubjectsPage = () => {
         {subjects.map((subject) => (
           <Card
             key={subject.id}
-            className="rounded-3xl shadow-sm hover:shadow-md transition"
+            className="relative rounded-3xl shadow-lg overflow-hidden hover:scale-105 transition-transform"
           >
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white text-xl">
+            {/* Background Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${subject.image})` }}
+            />
+            <div className="absolute inset-0 bg-black/30"></div>
+
+            <CardContent className="relative flex flex-col items-center text-center text-white p-6">
+              <div className="flex items-center justify-center mb-4 h-16 w-16 rounded-full bg-white/20 text-3xl">
                 {subject.icon}
               </div>
-              <CardTitle className="text-lg font-semibold text-gray-900">
+              <CardTitle className="text-xl font-bold">
                 {subject.title}
               </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 text-sm mb-4">
-                {subject.description}
-              </p>
+              <p className="text-sm mt-2 mb-4">{subject.description}</p>
               <Button
-                className="w-full"
                 size="sm"
+                className="w-full bg-white text-gray-900 hover:bg-gray-200"
                 onClick={() => router.push(`/dashboard/subjects/${subject.id}`)}
               >
                 Start Learning
