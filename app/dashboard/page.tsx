@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 const DashboardPage = () => {
-  const [hoveredSubject, setHoveredSubject] = useState(null);
+  const [hoveredSubject, setHoveredSubject] = useState<string | null>(null);
 
   const user = {
     name: "Islom",
