@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export const DashboardPage = () => {
   // Random user data for demo
   const user = {
-    name: "Alex",
+    name: "Islom",
     progress: 45, // percent
     subjects: [
       { title: "Computer Basics", icon: "💻", progress: 70 },

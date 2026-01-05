@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 export const SettingsPage = () => {
-  const [name, setName] = useState("Alex");
-  const [email, setEmail] = useState("alex@example.com");
+  const [name, setName] = useState("Islom");
+  const [email, setEmail] = useState("islom@example.com");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
