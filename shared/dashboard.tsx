@@ -2,10 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const DashboardPage = () => {
-  // Random user data for demo
   const user = {
-    name: "Islom",
-    progress: 45, // percent
+    name: "Ibrohimova Zebo",
+    progress: 45,
     subjects: [
       { title: "Computer Basics", icon: "💻", progress: 70 },
       { title: "Algorithms & Logic", icon: "🧠", progress: 30 },
@@ -16,7 +15,6 @@ export const DashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b py-6 px-6 shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900">
           Welcome back, {user.name}!
@@ -26,9 +24,7 @@ export const DashboardPage = () => {
         </p>
       </header>
 
-      {/* Main content */}
       <main className="mx-auto max-w-7xl px-6 py-10 space-y-10">
-        {/* Overall Progress */}
         <Card className="rounded-3xl shadow-sm">
           <CardContent className="space-y-3">
             <h2 className="text-lg font-semibold text-gray-900">
@@ -44,7 +40,6 @@ export const DashboardPage = () => {
           </CardContent>
         </Card>
 
-        {/* Subjects */}
         <section>
           <h2 className="text-xl font-bold text-gray-900 mb-6">
             Your Subjects

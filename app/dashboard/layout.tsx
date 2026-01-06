@@ -15,8 +15,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const user = {
-    name: "Alex",
-    avatar: "https://i.pravatar.cc/150?img=3",
+    name: "Ibrohimova Zebo",
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRadJ-YmNxJTg6v9iO22fzR_65KenYJHFB5zg&s",
   };
 
   const sidebarItems = [

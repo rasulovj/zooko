@@ -5,7 +5,7 @@ const DashboardPage = () => {
   const [hoveredSubject, setHoveredSubject] = useState<string | null>(null);
 
   const user = {
-    name: "Islom",
+    name: "Ibrohimova Zebo",
     level: "Oraliq",
     streak: 12,
     totalPoints: 2850,
