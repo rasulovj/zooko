@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { playClick, playSuccess, playError, playLevelUp, playPop, playCelebrate } from "../../../lib/sounds";
 import ZCIcon from "../../../components/ZCIcon";
+import ZookoLoader from "../../../components/ZookoLoader";
 
 /* ===== Shared UI Atoms ===== */
 const ACCENT = {
@@ -596,10 +597,7 @@ export default function CourseViewPage() {
 
   if (isLoading) return (
     <div className="flex items-center justify-center py-32">
-      <div className="flex flex-col items-center gap-4 text-[var(--green-600)]/50">
-        <Loader2 size={28} className="animate-spin" />
-        <span className="text-[15px] font-semibold">Yuklanmoqda...</span>
-      </div>
+      <ZookoLoader text="Yuklanmoqda…" />
     </div>
   );
 

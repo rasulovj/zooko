@@ -84,13 +84,12 @@ function MiniCalendar({ progress }: { progress: any }) {
           return (
             <div
               key={day}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg text-[13px] font-semibold transition-all ${
-                isToday
-                  ? "bg-[#1C7C54] text-white shadow-md shadow-[#1C7C54]/25"
-                  : isActive
-                    ? "bg-[var(--green-50)] text-[var(--green-600)] ring-1 ring-[#73E2A7]/40"
-                    : day < today ? "text-[var(--foreground)]/25" : "text-[var(--foreground)]/50"
-              }`}
+              className={`w-8 h-8 flex items-center justify-center rounded-lg text-[13px] font-semibold transition-all ${isToday
+                ? "bg-[#1C7C54] text-white shadow-md shadow-[#1C7C54]/25"
+                : isActive
+                  ? "bg-[var(--green-50)] text-[var(--green-600)] ring-1 ring-[#73E2A7]/40"
+                  : day < today ? "text-[var(--foreground)]/25" : "text-[var(--foreground)]/50"
+                }`}
             >
               {day}
             </div>
@@ -141,15 +140,13 @@ function Leaderboard() {
           return (
             <div
               key={entry._id}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
-                isYou
-                  ? "bg-[var(--green-50)]/60 ring-1 ring-[#73E2A7]/30"
-                  : "hover:bg-[var(--hover-bg)]"
-              }`}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${isYou
+                ? "bg-[var(--green-50)]/60 ring-1 ring-[#73E2A7]/30"
+                : "hover:bg-[var(--hover-bg)]"
+                }`}
             >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[12px] font-bold flex-shrink-0 ${
-                i < 3 ? `ring-1 ${rankColors[i]}` : "bg-gray-50 text-[var(--foreground)]/40"
-              }`}>
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[12px] font-bold flex-shrink-0 ${i < 3 ? `ring-1 ${rankColors[i]}` : "bg-gray-50 text-[var(--foreground)]/40"
+                }`}>
                 {i + 1}
               </div>
               <div className="w-7 h-7 rounded-full bg-[var(--green-50)] flex items-center justify-center flex-shrink-0">
@@ -304,44 +301,44 @@ export default function DashboardHome() {
               <p className="text-[14px] text-[var(--foreground)]/40">Hali kurslar qo'shilmagan.</p>
             </div>
           ) : (
-            <div className="space-y-2.5">
-              {courses.slice(0, 4).map((course) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {courses.slice(0, 4).map((course, idx) => {
                 const completedLessons = progress?.lessonsCompleted?.filter(
                   (lc: any) => lc.courseId === course._id
                 ).length || 0;
                 const totalLessons = course.lessons.length;
                 const progressPct = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+                const colors = [
+                  { bg: "from-emerald-500 to-green-600", light: "bg-emerald-50 text-emerald-600" },
+                  { bg: "from-blue-500 to-indigo-600", light: "bg-blue-50 text-blue-600" },
+                  { bg: "from-amber-500 to-orange-600", light: "bg-amber-50 text-amber-600" },
+                  { bg: "from-purple-500 to-violet-600", light: "bg-purple-50 text-purple-600" },
+                ][idx % 4];
 
                 return (
                   <Link
                     key={course._id}
                     href={`/dashboard/lessons/${course._id}`}
-                    className="group flex items-center gap-4 bg-[var(--card-bg)] rounded-2xl p-4 shadow-sm border border-[var(--card-border)] hover:shadow-md hover:border-[#73E2A7]/25 transition-all duration-200"
+                    className="group bg-[var(--card-bg)] rounded-2xl overflow-hidden shadow-sm border border-[var(--card-border)] hover:shadow-lg hover:border-[#73E2A7]/25 transition-all duration-300 hover:-translate-y-0.5"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-[var(--green-50)] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <BookOpen size={18} className="text-[var(--green-600)]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-[15px] font-bold text-[var(--foreground)] group-hover:text-[var(--green-600)] transition-colors truncate">{course.title}</h3>
-                      <div className="flex items-center gap-2.5 mt-1">
-                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
-                          course.grade === "all" ? "bg-blue-50 text-blue-500" : "bg-[var(--green-50)] text-[var(--green-600)]"
-                        }`}>
+                    <div className="p-4">
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <h3 className="text-[14px] font-bold text-[var(--foreground)] group-hover:text-[var(--green-600)] transition-colors leading-snug line-clamp-2">{course.title}</h3>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex-shrink-0 ${colors.light}`}>
                           {course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`}
                         </span>
-                        <span className="text-[12px] text-[var(--foreground)]/35 font-medium">{totalLessons} dars</span>
                       </div>
-                      {totalLessons > 0 && (
-                        <div className="flex items-center gap-3 mt-2">
-                          <div className="flex-1 h-1.5 bg-[var(--green-50)] rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-[#73E2A7] to-[#1C7C54] rounded-full transition-all duration-700"
-                              style={{ width: `${progressPct}%` }}
-                            />
-                          </div>
-                          <span className="text-[11px] font-bold text-[var(--green-600)] tabular-nums w-8 text-right">{progressPct}%</span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 text-[12px] text-[var(--foreground)]/40 mb-3">
+                        <BookOpen size={13} />
+                        <span>{totalLessons} dars</span>
+                        <span className="ml-auto font-bold text-[var(--foreground)]/60">{progressPct}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-[var(--green-50)] rounded-full overflow-hidden">
+                        <div
+                          className={`h-full bg-gradient-to-r ${colors.bg} rounded-full transition-all duration-700`}
+                          style={{ width: `${progressPct}%` }}
+                        />
+                      </div>
                     </div>
                   </Link>
                 );
@@ -352,30 +349,37 @@ export default function DashboardHome() {
 
         {/* Level Progress */}
         {levelInfo && (
-          <div className="bg-[var(--card-bg)] rounded-2xl p-5 shadow-sm border border-[var(--card-border)] animate-fade-in-up delay-400">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#73E2A7] to-[#1C7C54] flex items-center justify-center shadow-sm">
-                  <TrendingUp size={16} className="text-white" />
+          <div className="bg-gradient-to-br from-[#1B512D] to-[#1C7C54] rounded-2xl p-5 md:p-6 shadow-lg relative overflow-hidden animate-fade-in-up delay-400">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#73E2A7]/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[#73E2A7]/8 rounded-full blur-2xl" />
+            <div className="relative">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
+                    <TrendingUp size={22} className="text-[#73E2A7]" />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-medium text-white/50">Sizning darajangiz</p>
+                    <p className="text-[20px] font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>{levelInfo.level}</p>
+                  </div>
                 </div>
-                <h2 className="text-[16px] font-bold text-[var(--foreground)]">Sizning darajangiz</h2>
+                <div className="text-right">
+                  <p className="text-[24px] font-bold text-[#73E2A7]" style={{ fontFamily: "var(--font-display)" }}>{Math.round(levelInfo.progress * 100)}%</p>
+                </div>
               </div>
-              <span className="text-[12px] font-bold text-[var(--green-600)] bg-[var(--green-50)] px-3 py-1.5 rounded-lg tracking-wide uppercase">
-                {levelInfo.level}
-              </span>
+              <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden mb-3">
+                <div
+                  className="h-full bg-gradient-to-r from-[#73E2A7] to-[#DEF4C6] rounded-full transition-all duration-1000"
+                  style={{ width: `${Math.min(levelInfo.progress * 100, 100)}%` }}
+                />
+              </div>
+              <p className="text-[13px] text-white/50">
+                {levelInfo.nextLevel
+                  ? <>{levelInfo.xpToNext} ZC qoldi <span className="font-semibold text-[#73E2A7]">&ldquo;{levelInfo.nextLevel}&rdquo;</span> darajasiga</>
+                  : <span className="font-semibold text-[#73E2A7]">Maksimal daraja erishildi! 🎉</span>
+                }
+              </p>
             </div>
-            <div className="w-full h-3 bg-[var(--green-50)] rounded-full overflow-hidden mb-2.5">
-              <div
-                className="h-full bg-gradient-to-r from-[#73E2A7] to-[#1C7C54] rounded-full transition-all duration-1000"
-                style={{ width: `${Math.min(levelInfo.progress * 100, 100)}%` }}
-              />
-            </div>
-            <p className="text-[13px] text-[var(--foreground)]/45">
-              {levelInfo.nextLevel
-                ? <>{levelInfo.xpToNext} ZC qoldi <span className="font-semibold text-[var(--green-600)]">&ldquo;{levelInfo.nextLevel}&rdquo;</span> darajasiga</>
-                : <span className="font-semibold text-[var(--green-600)]">Maksimal daraja erishildi!</span>
-              }
-            </p>
           </div>
         )}
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getStoredUser, useLogout } from "../lib/auth";
+import { useEffect, useState, useRef } from "react";
+import { getStoredUser, useLogout, User as UserType } from "../lib/auth";
 import { useProgress, getLevelInfo } from "../lib/progress";
-import { Flame, Bell, LogOut, User, Menu, Sun, Moon } from "lucide-react";
+import { Flame, Bell, LogOut, User, Menu, ChevronDown } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
 import { playClick, playPop, playNotification } from "../lib/sounds";
 import ZCIcon from "./ZCIcon";
@@ -11,14 +11,24 @@ import { useTheme } from "../providers/ThemeProvider";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
-  const [user, setUser] = useState<{ firstName: string; lastName: string } | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const logout = useLogout();
   const { data: progress } = useProgress();
   const { toggleMobile } = useSidebar();
   const { theme, toggleTheme } = useTheme();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setUser(getStoredUser());
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const levelInfo = progress ? getLevelInfo(progress.totalXP) : null;
@@ -72,25 +82,50 @@ export default function Header() {
           <span className="absolute top-1 right-1 md:top-1.5 md:right-1.5 w-2 h-2 bg-[#73E2A7] rounded-full ring-2 ring-[var(--card-bg)]" />
         </button>
 
-        {/* Logout */}
-        <button
-          onClick={() => { playClick(); logout(); }}
-          className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-[var(--foreground)]/40 hover:text-red-500 hover:bg-red-50/60 transition-all"
-          title="Chiqish"
-        >
-          <LogOut size={18} />
-        </button>
+        {/* Avatar & Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => { setShowDropdown(!showDropdown); playPop(); }}
+            className="flex items-center gap-2 pl-1 md:pl-2 hover:bg-[var(--green-50)]/40 p-1 rounded-xl transition-all"
+          >
+            <div className="text-right hidden md:block">
+              <p className="text-[13px] md:text-[14px] font-semibold text-[var(--foreground)] leading-tight">
+                {user ? `${user.firstName} ${user.lastName.charAt(0)}.` : "..."}
+              </p>
+            </div>
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[var(--green-50)] border border-[#73E2A7]/30 flex items-center justify-center overflow-hidden">
+              {user?.avatar ? (
+                <img
+                  src={user.avatar.startsWith("http") ? user.avatar : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}${user.avatar}`}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User size={15} className="text-[var(--green-600)]" />
+              )}
+            </div>
+            <ChevronDown size={14} className={`text-[var(--foreground)]/40 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} />
+          </button>
 
-        {/* Avatar */}
-        <div className="flex items-center gap-2 pl-1 md:pl-2">
-          <div className="text-right hidden md:block">
-            <p className="text-[13px] md:text-[14px] font-semibold text-[var(--foreground)] leading-tight">
-              {user ? `${user.firstName} ${user.lastName.charAt(0)}.` : "..."}
-            </p>
-          </div>
-          <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[var(--green-50)] border border-[#73E2A7]/30 flex items-center justify-center">
-            <User size={15} className="text-[var(--green-600)]" />
-          </div>
+          {showDropdown && (
+            <div className="absolute top-full right-0 mt-2 w-44 md:w-48 bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="px-4 py-2 border-b border-[var(--card-border)] mb-1">
+                <p className="text-[13px] font-bold text-[var(--foreground)] truncate">
+                  {user?.firstName} {user?.lastName}
+                </p>
+                <p className="text-[11px] text-[var(--foreground)]/50 truncate">
+                  {user?.email}
+                </p>
+              </div>
+              <button
+                onClick={() => { playClick(); logout(); }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-red-500 cursor-pointer transition-all text-left"
+              >
+                <LogOut size={16} />
+                <span>Chiqish</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

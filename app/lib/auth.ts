@@ -7,7 +7,7 @@ type LoginPayload = {
   password: string;
 };
 
-type User = {
+export type User = {
   _id: string;
   firstName: string;
   lastName: string;

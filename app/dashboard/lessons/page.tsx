@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCourses } from "../../lib/courses";
 import { getStoredUser } from "../../lib/auth";
 import { useProgress } from "../../lib/progress";
+import ZookoLoader from "../../components/ZookoLoader";
 import {
   BookOpen,
   Loader2,
@@ -74,10 +75,7 @@ export default function CoursesPage() {
       {/* Loading */}
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="flex items-center gap-3 text-[var(--foreground)]/40">
-            <Loader2 size={20} className="animate-spin" />
-            <span className="text-[14px] font-medium">Kurslar yuklanmoqda...</span>
-          </div>
+          <ZookoLoader text="Kurslar yuklanmoqda…" />
         </div>
       ) : !filtered || filtered.length === 0 ? (
         <div className="bg-[var(--card-bg)] rounded-2xl p-14 text-center shadow-sm border border-[var(--card-border)]">

@@ -71,7 +71,7 @@ export default function LoginPage() {
                 <LeafIcon className="w-4 h-4 text-white" />
               </div>
               <span className="text-xl font-bold text-[var(--foreground)] tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-                zooko
+                zookow
               </span>
             </Link>
             <ThemeToggle />
