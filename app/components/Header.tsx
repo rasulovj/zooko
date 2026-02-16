@@ -8,6 +8,7 @@ import { useSidebar } from "./SidebarContext";
 import { playClick, playPop, playNotification } from "../lib/sounds";
 import ZCIcon from "./ZCIcon";
 import { useTheme } from "../providers/ThemeProvider";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [user, setUser] = useState<{ firstName: string; lastName: string } | null>(null);
@@ -63,13 +64,7 @@ export default function Header() {
         )}
 
         {/* Theme toggle */}
-        <button
-          onClick={() => { playPop(); toggleTheme(); }}
-          className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-[var(--foreground)]/40 hover:text-[var(--foreground)]/70 hover:bg-[var(--green-50)]/40 transition-all"
-          title={theme === "dark" ? "Yorug' rejim" : "Qorong'i rejim"}
-        >
-          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
+        <ThemeToggle />
 
         {/* Notifications */}
         <button onClick={() => playNotification()} className="relative w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-[var(--foreground)]/40 hover:text-[var(--foreground)]/70 hover:bg-[var(--green-50)]/40 transition-all">
