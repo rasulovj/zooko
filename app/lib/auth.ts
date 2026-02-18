@@ -1,9 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import api from "../lib/api";
 
 type LoginPayload = {
-  email: string;
+  userName: string;
   password: string;
 };
 
@@ -12,7 +12,6 @@ export type User = {
   firstName: string;
   lastName: string;
   userName: string;
-  email: string;
   role: string;
   coins: number;
   avatar: string;
@@ -68,4 +67,23 @@ export function getStoredToken(): string | null {
 
 export function isAuthenticated(): boolean {
   return !!getStoredToken();
+}
+
+// Refresh stored user data from server (picks up grade changes from admin)
+export function useRefreshUser() {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const { data } = await api.get("/auth/me");
+      // Update stored user with fresh data
+      const stored = getStoredUser();
+      if (stored) {
+        const updated = { ...stored, grade: data.grade, coins: data.coins, avatar: data.avatar };
+        localStorage.setItem("zooko_user", JSON.stringify(updated));
+      }
+      return data;
+    },
+    enabled: isAuthenticated(),
+    staleTime: 5 * 60 * 1000, // refresh every 5 minutes
+  });
 }

@@ -71,6 +71,15 @@ html {
   }
 }
 
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -292,6 +301,54 @@ html {
 
 .loading-dot {
   animation: loading-bounce 1.2s ease-in-out infinite;
+}
+
+/* ═══ Streak Modal Animations ═══ */
+@keyframes streak-entrance {
+  0% { transform: scale(0.3) rotate(-12deg); opacity: 0; }
+  50% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes streak-flame-pulse {
+  0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+  30% { transform: scale(1.18) translateY(-6px); filter: brightness(1.2); }
+  60% { transform: scale(0.95) translateY(2px); filter: brightness(1.05); }
+}
+@keyframes streak-number-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); opacity: 1; }
+  80% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+@keyframes streak-ring-expand {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes streak-sparkle {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  40% { transform: scale(1) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+@keyframes streak-bar-fill {
+  0% { width: 0; }
+}
+@keyframes streak-confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-80px) rotate(720deg); opacity: 0; }
+}
+@keyframes streak-badge-bounce {
+  0% { transform: translateY(20px) scale(0.8); opacity: 0; }
+  60% { transform: translateY(-4px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes streak-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(251, 146, 60, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(251, 146, 60, 0.35), 0 0 80px rgba(251, 146, 60, 0.1); }
+}
+
+@keyframes search-drop {
+  from { transform: translateY(-12px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 /* Hide scrollbar for horizontal lesson nav on mobile */

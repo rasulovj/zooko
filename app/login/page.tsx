@@ -18,13 +18,13 @@ function LeafIcon({ className }: { className?: string }) {
 
 export default function LoginPage() {
   const { theme } = useTheme();
-  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const login = useLogin();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    login.mutate({ email, password });
+    login.mutate({ userName, password });
   };
 
   return (
@@ -95,18 +95,18 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-xs font-medium text-[var(--foreground)]/60 mb-1.5">
-                Elektron pochta
+              <label htmlFor="userName" className="block text-xs font-medium text-[var(--foreground)]/60 mb-1.5">
+                Foydalanuvchi nomi
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="userName"
+                name="userName"
+                type="text"
+                autoComplete="username"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="foydalanuvchi_nomi"
                 className="w-full h-12 px-4 bg-[var(--card-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--foreground)] placeholder:text-[var(--foreground)]/25 focus:outline-none focus:ring-2 focus:ring-[var(--green-600)]/20 focus:border-[var(--green-600)]/30 transition-all"
               />
             </div>

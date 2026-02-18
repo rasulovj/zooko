@@ -51,7 +51,7 @@ export type LeaderboardEntry = {
   level: string;
 };
 
-const LEVELS = [
+export const LEVELS = [
   { name: "Boshlang'ich", minXP: 0, maxXP: 99 },
   { name: "Kashfiyotchi", minXP: 100, maxXP: 299 },
   { name: "Dasturchi", minXP: 300, maxXP: 599 },

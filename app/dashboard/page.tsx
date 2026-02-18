@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useCourses } from "../lib/courses";
 import { getStoredUser } from "../lib/auth";
@@ -27,12 +27,14 @@ import {
   Target,
 } from "lucide-react";
 import ZCIcon from "../components/ZCIcon";
+import StreakModal from "../components/StreakModal";
+import { getMonthName } from "../lib/dateUtils";
 
 /* ─── Mini Calendar ─── */
 function MiniCalendar({ progress }: { progress: any }) {
   const [currentDate] = useState(new Date());
   const today = currentDate.getDate();
-  const month = currentDate.toLocaleString("uz-UZ", { month: "long" });
+  const month = getMonthName(currentDate);
   const year = currentDate.getFullYear();
 
   const firstDay = new Date(year, currentDate.getMonth(), 1).getDay();
@@ -227,6 +229,7 @@ export default function DashboardHome() {
   const { data: progress } = useProgress();
   const claimDaily = useClaimDailyLogin();
   const [dailyClaimed, setDailyClaimed] = useState(false);
+  const [streakModal, setStreakModal] = useState<{ streak: number; xpEarned: number; newBadges: string[] } | null>(null);
 
   useEffect(() => {
     const user = getStoredUser();
@@ -240,7 +243,18 @@ export default function DashboardHome() {
     if (progress && !dailyClaimed) {
       const today = new Date().toISOString().split("T")[0];
       if (progress.lastLoginDate !== today) {
-        claimDaily.mutate(undefined, { onSuccess: () => setDailyClaimed(true) });
+        claimDaily.mutate(undefined, {
+          onSuccess: (data) => {
+            setDailyClaimed(true);
+            if (!data.alreadyClaimed) {
+              setStreakModal({
+                streak: data.streak || data.progress?.streak || 1,
+                xpEarned: data.xpEarned || 5,
+                newBadges: (data.newBadges || []).map((b: any) => typeof b === "string" ? b : b.key),
+              });
+            }
+          },
+        });
       } else {
         setDailyClaimed(true);
       }
@@ -254,6 +268,7 @@ export default function DashboardHome() {
   const correctQuizzes = progress?.quizScores?.filter((q: any) => q.correct).length || 0;
 
   return (
+    <>
     <div className="flex flex-col xl:flex-row gap-5 xl:gap-7">
       {/* Main content */}
       <div className="flex-1 min-w-0 space-y-5 md:space-y-6">
@@ -453,5 +468,16 @@ export default function DashboardHome() {
         <DailyTip />
       </div>
     </div>
+
+    {/* Streak Modal */}
+    {streakModal && (
+      <StreakModal
+        streak={streakModal.streak}
+        xpEarned={streakModal.xpEarned}
+        newBadges={streakModal.newBadges}
+        onClose={() => setStreakModal(null)}
+      />
+    )}
+    </>
   );
 }

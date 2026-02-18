@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useCourse, type ContentBlock } from "../../../lib/courses";
 import { useProgress, useCompleteLesson, useSubmitQuiz, useSubmitInteractive } from "../../../lib/progress";
@@ -25,15 +25,19 @@ import {
   RotateCcw,
   Check,
   X,
+  Terminal,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { playClick, playSuccess, playError, playLevelUp, playPop, playCelebrate } from "../../../lib/sounds";
 import ZCIcon from "../../../components/ZCIcon";
 import ZookoLoader from "../../../components/ZookoLoader";
+import VideoPlayer from "../../../components/VideoPlayer";
 
 /* ===== Shared UI Atoms ===== */
 const ACCENT = {
   quiz: { bg: "bg-[#1C7C54]/5", border: "border-[var(--card-border)]", text: "text-[var(--green-600)]", label: "Test", Icon: CircleHelp },
-  code_challenge: { bg: "bg-[#1B512D]/5", border: "border-[#1B512D]/10", text: "text-[var(--foreground)]", label: "Kod", Icon: Play },
+  code_challenge: { bg: "bg-[#1B512D]/5", border: "border-[#1B512D]/10", text: "text-[var(--foreground)]", label: "Kod", Icon: Terminal },
   fill_blank: { bg: "bg-[#73E2A7]/10", border: "border-[#73E2A7]/30", text: "text-[var(--foreground)]", label: "Bo'sh joy", Icon: PenLine },
   match_words: { bg: "bg-[var(--green-50)]/40", border: "border-[#73E2A7]/20", text: "text-[var(--green-600)]", label: "Moslashtirish", Icon: ArrowLeftRight },
   scratch_blocks: { bg: "bg-[#1C7C54]/5", border: "border-[var(--card-border)]", text: "text-[var(--green-600)]", label: "Bloklar", Icon: Layers3 },
@@ -78,6 +82,79 @@ function ResultBanner({ correct, xp }: { correct: boolean; xp: number }) {
   );
 }
 
+/* ===== Success Modal ===== */
+function SuccessModal({ xp, onClose }: { xp: number; onClose: () => void }) {
+  const [visible, setVisible] = useState(false);
+  const [particles] = useState(() =>
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      delay: Math.random() * 0.5,
+      size: 6 + Math.random() * 8,
+      color: ["#1C7C54", "#73E2A7", "#FFD700", "#4ade80", "#22c55e", "#facc15"][Math.floor(Math.random() * 6)],
+      rotation: Math.random() * 360,
+    }))
+  );
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+    const t = setTimeout(() => {
+      setVisible(false);
+      setTimeout(onClose, 300);
+    }, 2500);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  return (
+    <div className={`fixed inset-0 z-[100] flex items-center justify-center transition-all duration-300 ${visible ? "bg-black/40 backdrop-blur-sm" : "bg-transparent pointer-events-none"}`} onClick={() => { setVisible(false); setTimeout(onClose, 300); }}>
+      {/* Confetti particles */}
+      {particles.map(p => (
+        <div
+          key={p.id}
+          className="absolute w-2 h-2 rounded-sm"
+          style={{
+            left: `${p.x}%`,
+            top: "-5%",
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            transform: `rotate(${p.rotation}deg)`,
+            animation: `confetti-fall 2s ease-in ${p.delay}s forwards`,
+          }}
+        />
+      ))}
+      <div
+        className={`bg-[var(--card-bg)] rounded-3xl border-2 border-[#73E2A7]/50 shadow-2xl shadow-[#1C7C54]/20 p-8 max-w-xs w-full text-center transition-all duration-300 ${visible ? "scale-100 opacity-100" : "scale-75 opacity-0"}`}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-[#1C7C54] flex items-center justify-center shadow-lg shadow-[#1C7C54]/30" style={{ animation: "success-pop 0.5s cubic-bezier(0.34,1.56,0.64,1)" }}>
+          <CheckCircle2 size={36} className="text-white" />
+        </div>
+        <h3 className="text-2xl font-bold text-[var(--foreground)] mb-1" style={{ fontFamily: "var(--font-display)" }}>
+          Ajoyib! 🎉
+        </h3>
+        <p className="text-sm text-[var(--foreground)]/50 mb-4">To'g'ri javob berdingiz!</p>
+        {xp > 0 && (
+          <div className="inline-flex items-center gap-2 bg-[var(--green-50)] text-[var(--green-600)] font-bold text-lg px-5 py-2.5 rounded-2xl border border-[#73E2A7]/30">
+            <ZCIcon size={20} /> +{xp} ZC
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        @keyframes confetti-fall {
+          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes success-pop {
+          0% { transform: scale(0); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function AnsweredBadge({ correct }: { correct: boolean }) {
   return (
     <span className={`inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-lg ${correct ? "bg-[var(--green-50)] text-[var(--green-600)]" : "bg-red-50 text-red-500"}`}>
@@ -97,8 +174,8 @@ function SubmitBtn({ onClick, disabled, loading, label }: { onClick: () => void;
 }
 
 /* ===== QUIZ BLOCK ===== */
-function QuizBlock({ block, courseId, lessonId, progress, submitQuiz }: {
-  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitQuiz: any;
+function QuizBlock({ block, courseId, lessonId, progress, submitQuiz, onSuccess }: {
+  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitQuiz: any; onSuccess: (xp: number) => void;
 }) {
   const [selected, setSelected] = useState<number | null>(null);
   const [result, setResult] = useState<{ correct: boolean; xpEarned: number } | null>(null);
@@ -108,7 +185,7 @@ function QuizBlock({ block, courseId, lessonId, progress, submitQuiz }: {
     if (selected === null) return;
     const res = await submitQuiz.mutateAsync({ courseId, lessonId, contentId: block._id, selectedIndex: selected });
     setResult({ correct: res.correct, xpEarned: res.xpEarned });
-    res.correct ? playCelebrate() : playError();
+    if (res.correct) { playCelebrate(); onSuccess(res.xpEarned); } else { playError(); }
   };
 
   if (alreadyAnswered) return (
@@ -144,8 +221,8 @@ function QuizBlock({ block, courseId, lessonId, progress, submitQuiz }: {
 }
 
 /* ===== CODE CHALLENGE BLOCK ===== */
-function CodeChallengeBlock({ block, courseId, lessonId, progress, submitInteractive }: {
-  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any;
+function CodeChallengeBlock({ block, courseId, lessonId, progress, submitInteractive, onSuccess }: {
+  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any; onSuccess: (xp: number) => void;
 }) {
   const [answer, setAnswer] = useState("");
   const [result, setResult] = useState<{ correct: boolean; xpEarned: number } | null>(null);
@@ -156,15 +233,38 @@ function CodeChallengeBlock({ block, courseId, lessonId, progress, submitInterac
     if (!answer.trim()) return;
     const res = await submitInteractive.mutateAsync({ courseId, lessonId, contentId: block._id, answer: answer.trim() });
     setResult({ correct: res.correct, xpEarned: res.xpEarned });
-    res.correct ? playCelebrate() : playError();
+    if (res.correct) { playCelebrate(); onSuccess(res.xpEarned); } else { playError(); }
   };
+
+  const codeDisplay = block.codeTemplate ? (
+    <div className="rounded-2xl overflow-hidden border border-[#1B512D]/20 shadow-lg mb-5">
+      <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#0d1f17]">
+        <div className="flex gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+        </div>
+        <span className="text-[11px] font-mono font-bold text-[#73E2A7]/60 ml-1">
+          {block.language === "python" ? "Python" : "JavaScript"}
+        </span>
+      </div>
+      <div className="bg-[#0a1a12] flex">
+        <div className="select-none py-3 pl-3 pr-2 text-right">
+          {block.codeTemplate.split("\n").map((_, i) => (
+            <div key={i} className="text-[12px] leading-[22px] font-mono text-[#73E2A7]/20">{i + 1}</div>
+          ))}
+        </div>
+        <pre className="flex-1 py-3 pr-4 text-[#DEF4C6] text-[13px] md:text-[14px] leading-[22px] font-mono overflow-x-auto">{block.codeTemplate}</pre>
+      </div>
+    </div>
+  ) : null;
 
   if (alreadyAnswered) return (
     <BlockShell type="code_challenge">
       <div className="flex items-center gap-2 mb-4"><AnsweredBadge correct={alreadyAnswered.correct} /></div>
       <p className="text-lg font-bold text-[var(--foreground)] mb-4">{block.question}</p>
-      {block.codeTemplate && <pre className="bg-[#1B512D] text-[#73E2A7] text-base p-6 rounded-2xl overflow-x-auto font-mono leading-relaxed">{block.codeTemplate}</pre>}
-      <p className="text-sm text-[var(--foreground)]/50 mt-4">Javob: <code className="bg-[var(--green-50)] px-3 py-1 rounded-lg text-[var(--green-600)] font-bold text-base">{block.expectedOutput}</code></p>
+      {codeDisplay}
+      <p className="text-sm text-[var(--foreground)]/50">Javob: <code className="bg-[var(--green-50)] px-3 py-1 rounded-lg text-[var(--green-600)] font-bold text-base">{block.expectedOutput}</code></p>
     </BlockShell>
   );
 
@@ -178,7 +278,7 @@ function CodeChallengeBlock({ block, courseId, lessonId, progress, submitInterac
   return (
     <BlockShell type="code_challenge" xp={block.xpReward || 20}>
       <p className="text-lg font-bold text-[var(--foreground)] mb-5">{block.question}</p>
-      {block.codeTemplate && <pre className="bg-[#1B512D] text-[#73E2A7] text-base p-6 rounded-2xl overflow-x-auto font-mono leading-relaxed mb-5">{block.codeTemplate}</pre>}
+      {codeDisplay}
       <div className="space-y-4">
         <input type="text" value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder="Natijani yozing..."
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
@@ -198,8 +298,8 @@ function CodeChallengeBlock({ block, courseId, lessonId, progress, submitInterac
 }
 
 /* ===== FILL BLANK BLOCK ===== */
-function FillBlankBlock({ block, courseId, lessonId, progress, submitInteractive }: {
-  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any;
+function FillBlankBlock({ block, courseId, lessonId, progress, submitInteractive, onSuccess }: {
+  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any; onSuccess: (xp: number) => void;
 }) {
   const blanks = block.blanks || [];
   const blankCount = (block.blankText?.match(/___/g) || []).length;
@@ -238,7 +338,7 @@ function FillBlankBlock({ block, courseId, lessonId, progress, submitInteractive
     if (placed.some(p => !p)) return;
     const res = await submitInteractive.mutateAsync({ courseId, lessonId, contentId: block._id, answer: placed });
     setResult({ correct: res.correct, xpEarned: res.xpEarned });
-    res.correct ? playCelebrate() : playError();
+    if (res.correct) { playCelebrate(); onSuccess(res.xpEarned); } else { playError(); }
   };
 
   const renderText = (showAnswers: boolean) => {
@@ -315,8 +415,8 @@ function FillBlankBlock({ block, courseId, lessonId, progress, submitInteractive
 }
 
 /* ===== MATCH WORDS BLOCK ===== */
-function MatchWordsBlock({ block, courseId, lessonId, progress, submitInteractive }: {
-  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any;
+function MatchWordsBlock({ block, courseId, lessonId, progress, submitInteractive, onSuccess }: {
+  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any; onSuccess: (xp: number) => void;
 }) {
   const pairs = block.pairs || [];
   const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
@@ -349,7 +449,7 @@ function MatchWordsBlock({ block, courseId, lessonId, progress, submitInteractiv
         setTimeout(async () => {
           const res = await submitInteractive.mutateAsync({ courseId, lessonId, contentId: block._id, answer: newMatched });
           setResult({ correct: res.correct, xpEarned: res.xpEarned });
-          res.correct ? playCelebrate() : playError();
+          if (res.correct) { playCelebrate(); onSuccess(res.xpEarned); } else { playError(); }
         }, 600);
       }
     } else {
@@ -505,8 +605,8 @@ function SortableScratchItem({ id, text, index }: { id: string; text: string; in
 }
 
 /* ===== SCRATCH BLOCKS BLOCK ===== */
-function ScratchBlocksBlock({ block, courseId, lessonId, progress, submitInteractive }: {
-  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any;
+function ScratchBlocksBlock({ block, courseId, lessonId, progress, submitInteractive, onSuccess }: {
+  block: ContentBlock; courseId: string; lessonId: string; progress: any; submitInteractive: any; onSuccess: (xp: number) => void;
 }) {
   const correctOrder = (block.scratchBlocks || []).sort((a, b) => a.order - b.order).map(b => b.text);
   const shuffled = useMemo(() => {
@@ -532,7 +632,7 @@ function ScratchBlocksBlock({ block, courseId, lessonId, progress, submitInterac
   const handleSubmit = async () => {
     const res = await submitInteractive.mutateAsync({ courseId, lessonId, contentId: block._id, answer: items });
     setResult({ correct: res.correct, xpEarned: res.xpEarned });
-    res.correct ? playCelebrate() : playError();
+    if (res.correct) { playCelebrate(); onSuccess(res.xpEarned); } else { playError(); }
   };
 
   if (alreadyAnswered) return (
@@ -594,6 +694,18 @@ export default function CourseViewPage() {
   const submitInteractive = useSubmitInteractive();
   const [activeLesson, setActiveLesson] = useState(0);
   const [showComplete, setShowComplete] = useState<string | null>(null);
+  const [successXP, setSuccessXP] = useState<number | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Lock body scroll when mobile bottom sheet is open
+  useEffect(() => {
+    if (sidebarOpen && window.innerWidth < 768) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [sidebarOpen]);
+
+  const onTaskSuccess = useCallback((xp: number) => setSuccessXP(xp), []);
 
   if (isLoading) return (
     <div className="flex items-center justify-center py-32">
@@ -627,6 +739,7 @@ export default function CourseViewPage() {
 
   return (
     <div className="space-y-8">
+      {successXP !== null && <SuccessModal xp={successXP} onClose={() => setSuccessXP(null)} />}
       {showComplete && (
         <div className="fixed top-20 right-4 md:right-6 z-50 animate-bounce">
           <div className="bg-[#1C7C54] text-white px-4 md:px-6 py-3 md:py-4 rounded-2xl shadow-xl shadow-[#1B512D]/20 flex items-center gap-2 md:gap-3">
@@ -664,28 +777,166 @@ export default function CourseViewPage() {
           <p className="text-base text-[var(--foreground)]/40">O'qituvchingiz hali bu kursga darslar qo'shmagan.</p>
         </div>
       ) : (
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
-          {/* Lesson sidebar — horizontal scroll on mobile, vertical sticky on desktop */}
-          <div className="lg:w-[280px] lg:flex-shrink-0 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-            <div className="flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 lg:p-2 lg:space-y-2 scrollbar-hide">
+        <div className="flex flex-col md:flex-row gap-0 relative">
+          {/* Mobile: compact lesson bar + overlay */}
+          <div className="md:hidden">
+            {/* Lesson bar toggle */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="w-full flex items-center gap-3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl px-4 py-3 mb-4 shadow-sm hover:border-[#73E2A7]/40 active:scale-[0.99] transition-all"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#1C7C54] flex items-center justify-center flex-shrink-0">
+                <span className="text-[13px] font-bold text-white">{activeLesson + 1}</span>
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-bold text-[var(--foreground)] truncate">{lesson?.title}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[11px] text-[var(--foreground)]/40">{activeLesson + 1} / {course.lessons.length} dars</span>
+                  <span className="text-[11px] font-semibold text-[var(--green-600)]">
+                    {course.lessons.filter((l) => isLessonCompleted(l._id)).length} yakunlangan
+                  </span>
+                </div>
+              </div>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--foreground)]/30 flex-shrink-0">
+                {sidebarOpen ? <X size={18} /> : <ChevronRight size={18} />}
+              </div>
+            </button>
+
+            {/* Mobile overlay lesson list */}
+            {sidebarOpen && (
+              <div className="fixed inset-0 z-50 overflow-hidden">
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} style={{ touchAction: "none" }} />
+                <div className="absolute bottom-0 left-0 right-0 bg-[var(--background)] rounded-t-3xl shadow-2xl max-h-[75vh] flex flex-col animate-slide-up">
+                  {/* Handle */}
+                  <div className="flex justify-center pt-3 pb-1">
+                    <div className="w-10 h-1 rounded-full bg-[var(--foreground)]/15" />
+                  </div>
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-5 pb-3">
+                    <div>
+                      <p className="text-[16px] font-bold text-[var(--foreground)]" style={{ fontFamily: "var(--font-display)" }}>Darslar</p>
+                      <p className="text-[12px] text-[var(--foreground)]/40 mt-0.5">
+                        {course.lessons.filter((l) => isLessonCompleted(l._id)).length} / {course.lessons.length} yakunlangan
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setSidebarOpen(false)}
+                      className="w-9 h-9 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-center text-[var(--foreground)]/40"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                  {/* Progress */}
+                  <div className="h-1 bg-[var(--card-border)] mx-5 rounded-full overflow-hidden mb-3">
+                    <div className="h-full rounded-full bg-[#1C7C54] transition-all duration-500"
+                      style={{ width: `${course.lessons.length > 0 ? (course.lessons.filter((l) => isLessonCompleted(l._id)).length / course.lessons.length) * 100 : 0}%` }} />
+                  </div>
+                  {/* List */}
+                  <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-2 overscroll-contain">
+                    {course.lessons.map((l, i) => {
+                      const completed = isLessonCompleted(l._id);
+                      const active = activeLesson === i;
+                      return (
+                        <button key={l._id}
+                          onClick={() => { setActiveLesson(i); setSidebarOpen(false); playClick(); }}
+                          className={`flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-left transition-all ${
+                            active ? "bg-[#1C7C54] text-white shadow-lg shadow-[#1B512D]/15" :
+                            completed ? "bg-[var(--green-50)]/40 border border-[#73E2A7]/20" :
+                            "bg-[var(--card-bg)] border border-[var(--card-border)]"
+                          }`}>
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-[13px] font-bold flex-shrink-0 ${
+                            completed ? (active ? "bg-white/20 text-white" : "bg-[var(--green-50)] text-[var(--green-600)]") :
+                            (active ? "bg-white/15 text-white/80" : "bg-[#1C7C54]/8 text-[var(--green-600)]/60")
+                          }`}>
+                            {completed ? <Check size={14} /> : i + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-[14px] font-semibold truncate ${active ? "text-white" : ""}`}>{l.title}</p>
+                            <p className={`text-[11px] mt-0.5 ${active ? "text-white/55" : "text-[var(--foreground)]/30"}`}>
+                              {l.content.length} blok{completed && !active ? " · ✓" : ""}
+                            </p>
+                          </div>
+                          {completed && !active && <CheckCircle2 size={16} className="text-[var(--green-600)]/40 flex-shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: collapsible sidebar */}
+          <div
+            className={`hidden md:flex sticky top-20 self-start max-h-[calc(100vh-6rem)] flex-col flex-shrink-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden ${
+              sidebarOpen ? "w-[260px]" : "w-[56px]"
+            }`}
+          >
+            {/* Sidebar header */}
+            <div className={`flex items-center mb-3 ${sidebarOpen ? "gap-3 px-1" : "justify-center px-0"}`}>
+              {sidebarOpen && (
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-bold text-[var(--foreground)] whitespace-nowrap">Darslar</p>
+                  <p className="text-[11px] text-[var(--foreground)]/35 whitespace-nowrap">
+                    {course.lessons.filter((l) => isLessonCompleted(l._id)).length} / {course.lessons.length} yakunlangan
+                  </p>
+                </div>
+              )}
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="w-9 h-9 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] flex items-center justify-center text-[var(--foreground)]/40 hover:text-[var(--green-600)] hover:border-[#73E2A7]/50 transition-all flex-shrink-0"
+                title={sidebarOpen ? "Yopish" : "Ochish"}
+              >
+                {sidebarOpen ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
+              </button>
+            </div>
+
+            {/* Progress bar */}
+            {sidebarOpen && (
+              <div className="h-1.5 rounded-full bg-[var(--card-border)] mb-3 mx-1 overflow-hidden">
+                <div className="h-full rounded-full bg-[#1C7C54] transition-all duration-500"
+                  style={{ width: `${course.lessons.length > 0 ? (course.lessons.filter((l) => isLessonCompleted(l._id)).length / course.lessons.length) * 100 : 0}%` }} />
+              </div>
+            )}
+
+            {/* Lesson list */}
+            <div className={`flex-1 overflow-y-auto space-y-1.5 scrollbar-hide ${sidebarOpen ? "pr-1" : ""}`}>
               {course.lessons.map((l, i) => {
                 const completed = isLessonCompleted(l._id);
                 const active = activeLesson === i;
                 return (
-                  <button key={l._id} onClick={() => { setActiveLesson(i); playClick(); }}
-                    className={`flex-shrink-0 lg:flex-shrink flex items-center gap-3 lg:gap-4 px-3 lg:px-4 py-3 lg:py-4 rounded-xl lg:rounded-2xl text-left transition-all duration-200 w-auto lg:w-full ${active ? "bg-[#1C7C54] text-white shadow-lg shadow-[#1B512D]/15 lg:scale-[1.02]" : "bg-[var(--card-bg)]/80 border border-[var(--card-border)] hover:border-[#73E2A7]/40 hover:shadow-md text-[var(--foreground)]"}`}>
-                    <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl flex items-center justify-center text-xs lg:text-sm font-bold flex-shrink-0 ${completed ? (active ? "bg-white/20 text-white" : "bg-[var(--green-50)] text-[var(--green-600)]") : (active ? "bg-white/15 text-white/80" : "bg-[#1C7C54]/5 text-[var(--green-600)]/60")}`}>
-                      {completed ? <Check size={14} /> : i + 1}
+                  <button key={l._id}
+                    onClick={() => { setActiveLesson(i); playClick(); }}
+                    title={sidebarOpen ? undefined : l.title}
+                    className={`group flex items-center w-full rounded-xl transition-all duration-200 ${
+                      sidebarOpen ? "gap-3 px-3 py-3" : "justify-center px-0 py-2"
+                    } ${
+                      active ? "bg-[#1C7C54] text-white shadow-lg shadow-[#1B512D]/15" :
+                      completed ? "bg-[var(--green-50)]/40 border border-[#73E2A7]/20 hover:border-[#73E2A7]/50 text-[var(--foreground)]" :
+                      "bg-[var(--card-bg)]/80 border border-[var(--card-border)] hover:border-[#73E2A7]/40 text-[var(--foreground)]"
+                    }`}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[13px] font-bold flex-shrink-0 transition-all ${
+                      completed ? (active ? "bg-white/20 text-white" : "bg-[var(--green-50)] text-[var(--green-600)]") :
+                      (active ? "bg-white/15 text-white/80" : "bg-[#1C7C54]/8 text-[var(--green-600)]/60 group-hover:bg-[#1C7C54]/12")
+                    }`}>
+                      {completed ? <Check size={13} className={active ? "" : "text-[var(--green-600)]"} /> : i + 1}
                     </div>
-                    <div className="min-w-0">
-                      <p className={`text-sm lg:text-base font-semibold truncate max-w-[120px] lg:max-w-none ${active ? "text-white" : ""}`}>{l.title}</p>
-                      {l.content.length > 0 && <p className={`text-[10px] lg:text-xs mt-0.5 ${active ? "text-white/60" : "text-[var(--foreground)]/30"}`}>{l.content.length} blok</p>}
-                    </div>
+                    {sidebarOpen && (
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-[13px] font-semibold truncate ${active ? "text-white" : ""}`}>{l.title}</p>
+                        <p className={`text-[10px] mt-0.5 ${active ? "text-white/55" : "text-[var(--foreground)]/25"}`}>
+                          {l.content.length} blok{completed && !active ? " · ✓" : ""}
+                        </p>
+                      </div>
+                    )}
                   </button>
                 );
               })}
             </div>
           </div>
+
+          {/* Gap (desktop only) */}
+          <div className={`hidden md:block transition-all duration-300 flex-shrink-0 ${sidebarOpen ? "w-6" : "w-4"}`} />
 
           {/* Lesson content */}
           <div className="flex-1 min-w-0 space-y-5">
@@ -703,11 +954,11 @@ export default function CourseViewPage() {
                 ) : (
                   <div className="space-y-5">
                     {lesson.content.map((block) => {
-                      if (block.type === "quiz") return <QuizBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitQuiz={submitQuiz} />;
-                      if (block.type === "code_challenge") return <CodeChallengeBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} />;
-                      if (block.type === "fill_blank") return <FillBlankBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} />;
-                      if (block.type === "match_words") return <MatchWordsBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} />;
-                      if (block.type === "scratch_blocks") return <ScratchBlocksBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} />;
+                      if (block.type === "quiz") return <QuizBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitQuiz={submitQuiz} onSuccess={onTaskSuccess} />;
+                      if (block.type === "code_challenge") return <CodeChallengeBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} onSuccess={onTaskSuccess} />;
+                      if (block.type === "fill_blank") return <FillBlankBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} onSuccess={onTaskSuccess} />;
+                      if (block.type === "match_words") return <MatchWordsBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} onSuccess={onTaskSuccess} />;
+                      if (block.type === "scratch_blocks") return <ScratchBlocksBlock key={block._id} block={block} courseId={id} lessonId={lesson._id} progress={progress} submitInteractive={submitInteractive} onSuccess={onTaskSuccess} />;
                       return (
                         <div key={block._id} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden shadow-sm">
                           {block.type === "text" && (
@@ -719,7 +970,9 @@ export default function CourseViewPage() {
                             </div>
                           )}
                           {block.type === "video" && (
-                            <div className="aspect-video"><iframe src={block.data} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div>
+                            <div className="p-3 md:p-5">
+                              <VideoPlayer src={block.data} />
+                            </div>
                           )}
                         </div>
                       );

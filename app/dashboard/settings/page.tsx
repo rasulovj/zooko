@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { getStoredUser } from "../../lib/auth";
 import { useTheme } from "../../providers/ThemeProvider";
 import api from "../../lib/api";
-import { User, Camera, Save, Eye, EyeOff, Sun, Moon, KeyRound, Mail, AtSign } from "lucide-react";
+import { User, Camera, Save, Eye, EyeOff, Sun, Moon, KeyRound, AtSign } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -15,7 +15,6 @@ export default function SettingsPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,7 +29,6 @@ export default function SettingsPage() {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
       setUserName(user.userName || "");
-      setEmail(user.email || "");
       setAvatar(user.avatar || "");
     }
   }, []);
@@ -62,7 +60,7 @@ export default function SettingsPage() {
     setSaving(true);
     setMessage(null);
     try {
-      const payload: any = { firstName, lastName, userName, email, avatar };
+      const payload: any = { firstName, lastName, userName, avatar };
       if (password) payload.password = password;
 
       const { data } = await api.put("/auth/profile", payload);
@@ -71,7 +69,6 @@ export default function SettingsPage() {
         firstName: data.firstName,
         lastName: data.lastName,
         userName: data.userName,
-        email: data.email,
         role: data.role,
         coins: data.coins,
         avatar: data.avatar,
@@ -145,10 +142,6 @@ export default function SettingsPage() {
         <div>
           <label className="text-xs font-bold text-[var(--foreground)]/50 mb-1.5 block flex items-center gap-1.5"><AtSign className="w-3.5 h-3.5" /> Foydalanuvchi nomi</label>
           <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="username" className={inputClass} />
-        </div>
-        <div>
-          <label className="text-xs font-bold text-[var(--foreground)]/50 mb-1.5 block flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email@example.com" className={inputClass} />
         </div>
       </div>
 

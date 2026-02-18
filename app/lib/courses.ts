@@ -45,12 +45,16 @@ export type Course = {
   updatedAt: string;
 };
 
-export function useCourses(grade = "") {
+export function useCourses(grade = "", grades?: string[]) {
   return useQuery<Course[]>({
-    queryKey: ["courses", grade],
+    queryKey: ["courses", grade, grades],
     queryFn: async () => {
       const params: Record<string, string> = {};
-      if (grade) params.grade = grade;
+      if (grades && grades.length > 0) {
+        params.grades = grades.join(",");
+      } else if (grade) {
+        params.grade = grade;
+      }
       const { data } = await api.get("/courses", { params });
       return data;
     },
