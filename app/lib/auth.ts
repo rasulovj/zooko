@@ -39,6 +39,35 @@ export function useLogin() {
   });
 }
 
+type RegisterPayload = {
+  firstName: string;
+  lastName: string;
+  userName: string;
+  password: string;
+  grade: string;
+};
+
+type RegisterResponse = {
+  token: string;
+  user: User;
+  message: string;
+};
+
+export function usePublicRegister() {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: async (payload: RegisterPayload): Promise<RegisterResponse> => {
+      const { data } = await api.post("/auth/public-register", payload);
+      return data;
+    },
+    onSuccess: (data) => {
+      localStorage.setItem("zooko_token", data.token);
+      localStorage.setItem("zooko_user", JSON.stringify(data.user));
+      router.push("/dashboard");
+    },
+  });
+}
+
 export function useLogout() {
   const router = useRouter();
 

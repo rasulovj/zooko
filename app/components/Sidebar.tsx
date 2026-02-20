@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "./SidebarContext";
-import { Home, BookOpen, BarChart3, Award, Settings, ChevronLeft, Leaf, X } from "lucide-react";
+import { Home, BookOpen, BarChart3, Award, Settings, ChevronLeft, Leaf, X, ClipboardCheck } from "lucide-react";
 import { playClick, playPop } from "../lib/sounds";
 
 const navItems = [
   { label: "Bosh sahifa", href: "/dashboard", Icon: Home },
   { label: "Kurslarim", href: "/dashboard/lessons", Icon: BookOpen },
+  { label: "Nazorat ishi", href: "/dashboard/nazorat-ishi", Icon: ClipboardCheck },
   { label: "Natijalar", href: "/dashboard/progress", Icon: BarChart3 },
   { label: "Nishonlar", href: "/dashboard/badges", Icon: Award },
   { label: "Sozlamalar", href: "/dashboard/settings", Icon: Settings },

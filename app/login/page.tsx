@@ -140,8 +140,10 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-8 text-center text-sm text-[var(--foreground)]/40">
-            Ma'lumotlaringiz yo'qmi?{" "}
-            <span className="text-[var(--green-600)] font-medium">O'qituvchingizdan so'rang.</span>
+            Hisobingiz yo'qmi?{" "}
+            <Link href="/register" className="text-[var(--green-600)] font-medium hover:underline">
+              Ro'yxatdan o'tish
+            </Link>
           </p>
         </div>
       </div>
