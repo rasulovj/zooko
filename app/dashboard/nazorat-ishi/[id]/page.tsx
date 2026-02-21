@@ -112,7 +112,7 @@ export default function ExamPage() {
   // ─── Warning screen ───
   if (showWarning && !antiCheatReady) {
     return (
-      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-6">
+      <div className="h-[calc(100vh-80px)] bg-[var(--background)] flex items-center justify-center p-6 overflow-hidden -m-4 md:-m-6">
         <div className="max-w-md w-full animate-fade-in-up">
           <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--card-border)] p-8 shadow-2xl">
             {/* Shield icon */}
@@ -166,7 +166,7 @@ export default function ExamPage() {
   if (submitted && submitResult) {
     const passed = submitResult.percentage >= (examData.exam.settings.passingScore || 60);
     return (
-      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-6">
+      <div className="h-[calc(100vh-80px)] bg-[var(--background)] flex items-center justify-center p-6 overflow-hidden -m-4 md:-m-6">
         <div className="max-w-md w-full animate-fade-in-up">
           <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--card-border)] p-8 shadow-xl text-center">
             {/* Result icon */}
@@ -308,8 +308,8 @@ export default function ExamPage() {
               {/* Timer */}
               {timeLeft !== null && (
                 <div className={`flex items-center gap-1.5 font-mono font-bold text-[13px] px-3.5 py-2 rounded-xl transition-colors ${timeLeft < 60 ? "bg-red-500/10 text-red-500 border border-red-500/15" :
-                    timeLeft < 300 ? "bg-amber-500/8 text-amber-600 border border-amber-500/15" :
-                      "bg-[var(--foreground)]/5 text-[var(--foreground)] border border-transparent"
+                  timeLeft < 300 ? "bg-amber-500/8 text-amber-600 border border-amber-500/15" :
+                    "bg-[var(--foreground)]/5 text-[var(--foreground)] border border-transparent"
                   } ${timeLeft < 60 ? "animate-pulse" : ""}`}>
                   <Clock size={13} /> {formatTime(timeLeft)}
                 </div>
@@ -333,10 +333,10 @@ export default function ExamPage() {
               return (
                 <button key={i} onClick={() => setCurrentQ(i)}
                   className={`w-11 h-11 rounded-xl text-[12px] font-bold transition-all relative ${isCurrent
-                      ? "bg-[var(--green-600)] text-white shadow-md shadow-[var(--green-600)]/20"
-                      : isAnswered
-                        ? "bg-[var(--green-600)]/10 text-[var(--green-600)] border border-[var(--green-600)]/15"
-                        : "bg-[var(--foreground)]/[0.03] text-[var(--foreground)]/40 hover:bg-[var(--foreground)]/[0.06] border border-transparent"
+                    ? "bg-[var(--green-600)] text-white shadow-md shadow-[var(--green-600)]/20"
+                    : isAnswered
+                      ? "bg-[var(--green-600)]/10 text-[var(--green-600)] border border-[var(--green-600)]/15"
+                      : "bg-[var(--foreground)]/[0.03] text-[var(--foreground)]/40 hover:bg-[var(--foreground)]/[0.06] border border-transparent"
                     }`}
                 >
                   {i + 1}
@@ -408,27 +408,37 @@ export default function ExamPage() {
 
 // ═══════════════ QUESTION RENDERER ═══════════════
 function QuestionRenderer({ question, answer, onAnswer }: { question: any; answer: any; onAnswer: (a: any) => void }) {
+  const imgSrc = (url: string) => url?.startsWith("/uploads") ? `${process.env.NEXT_PUBLIC_IMAGE_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}${url}` : url;
+
   switch (question.type) {
     case "quiz":
       return (
         <div className="space-y-4">
           <h3 className="text-[17px] font-bold text-[var(--foreground)] leading-snug">{question.question}</h3>
+          {question.questionImage && (
+            <div className="max-w-md">
+              <img src={imgSrc(question.questionImage)} alt="" className="w-full h-auto rounded-xl border border-[var(--card-border)]" />
+            </div>
+          )}
           <div className="space-y-2.5">
             {(question.options || []).map((opt: any, i: number) => {
               const selected = answer === i;
               return (
                 <button key={i} onClick={() => onAnswer(i)}
                   className={`w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all text-[14px] group ${selected
-                      ? "border-[var(--green-600)] bg-[var(--green-600)]/5"
-                      : "border-[var(--card-border)] hover:border-[var(--green-600)]/25 hover:bg-[var(--foreground)]/[0.01]"
+                    ? "border-[var(--green-600)] bg-[var(--green-600)]/5"
+                    : "border-[var(--card-border)] hover:border-[var(--green-600)]/25 hover:bg-[var(--foreground)]/[0.01]"
                     }`}>
                   <div className="flex items-center gap-3">
-                    <span className={`flex items-center justify-center w-7 h-7 rounded-lg text-[12px] font-bold transition-all ${selected ? "bg-[var(--green-600)] text-white" : "bg-[var(--foreground)]/5 text-[var(--foreground)]/40 group-hover:bg-[var(--foreground)]/8"
+                    <span className={`flex items-center justify-center w-7 h-7 rounded-lg text-[12px] font-bold transition-all flex-shrink-0 ${selected ? "bg-[var(--green-600)] text-white" : "bg-[var(--foreground)]/5 text-[var(--foreground)]/40 group-hover:bg-[var(--foreground)]/8"
                       }`}>
                       {String.fromCharCode(65 + i)}
                     </span>
-                    <span className={selected ? "text-[var(--green-600)] font-medium" : "text-[var(--foreground)]/80"}>{opt.text}</span>
-                    {selected && <Check size={16} className="ml-auto text-[var(--green-600)]" />}
+                    <div className="flex-1 space-y-2">
+                      <span className={selected ? "text-[var(--green-600)] font-medium" : "text-[var(--foreground)]/80"}>{opt.text}</span>
+                      {opt.image && <img src={imgSrc(opt.image)} alt="" className="max-w-[200px] h-auto rounded-lg border border-[var(--card-border)]" />}
+                    </div>
+                    {selected && <Check size={16} className="ml-auto text-[var(--green-600)] flex-shrink-0" />}
                   </div>
                 </button>
               );
