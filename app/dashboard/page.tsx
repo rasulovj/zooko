@@ -340,7 +340,7 @@ export default function DashboardHome() {
                       <div className="flex items-start justify-between gap-2 mb-3">
                         <h3 className="text-[14px] font-bold text-[var(--foreground)] group-hover:text-[var(--green-600)] transition-colors leading-snug line-clamp-2">{course.title}</h3>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex-shrink-0 ${colors.light}`}>
-                          {course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`}
+                          {Array.isArray(course.grade) ? (course.grade.includes("all") ? "Barchasi" : course.grade.map((g) => `${g}-sinf`).join(", ")) : (course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`)}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-[12px] text-[var(--foreground)]/40 mb-3">

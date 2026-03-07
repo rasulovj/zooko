@@ -34,7 +34,7 @@ export type Course = {
   _id: string;
   title: string;
   description: string;
-  grade: string;
+  grade: string[];
   createdBy: {
     _id: string;
     firstName: string;

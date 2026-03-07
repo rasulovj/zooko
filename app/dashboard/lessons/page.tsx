@@ -132,9 +132,9 @@ export default function CoursesPage() {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <span className={`text-[12px] font-bold px-2.5 py-1 rounded-lg ${
-                      course.grade === "all" ? "bg-blue-50 text-blue-500" : "bg-[var(--green-50)] text-[var(--green-600)]"
+                      Array.isArray(course.grade) ? (course.grade.includes("all") ? "bg-blue-50 text-blue-500" : "bg-[var(--green-50)] text-[var(--green-600)]") : (course.grade === "all" ? "bg-blue-50 text-blue-500" : "bg-[var(--green-50)] text-[var(--green-600)]")
                     }`}>
-                      {course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`}
+                      {Array.isArray(course.grade) ? (course.grade.includes("all") ? "Barchasi" : course.grade.map((g) => `${g}-sinf`).join(", ")) : (course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`)}
                     </span>
                     <span className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--foreground)]/40">
                       <Layers size={13} /> {course.lessons.length} dars

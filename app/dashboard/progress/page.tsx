@@ -209,7 +209,7 @@ function CourseProgressSection({ progress, courses }: { progress: any; courses: 
                   <div className="flex-1 min-w-0">
                     <h4 className="text-[14px] font-bold text-[var(--foreground)] leading-snug line-clamp-2">{course.title}</h4>
                     <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md mt-1.5 ${c.bg} ${c.text}`}>
-                      {course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`}
+                      {Array.isArray(course.grade) ? (course.grade.includes("all") ? "Barchasi" : course.grade.map((g: string) => `${g}-sinf`).join(", ")) : (course.grade === "all" ? "Barchasi" : `${course.grade}-sinf`)}
                     </span>
                   </div>
                   <span className="text-[20px] font-bold text-[var(--foreground)]" style={{ fontFamily: "var(--font-display)" }}>

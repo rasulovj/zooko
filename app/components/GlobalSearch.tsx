@@ -75,7 +75,7 @@ export default function GlobalSearch({ open, onClose }: { open: boolean; onClose
           items.push({
             type: "course",
             title: c.title,
-            subtitle: `${c.lessons.length} dars · ${c.grade}-sinf`,
+            subtitle: `${c.lessons.length} dars · ${Array.isArray(c.grade) ? (c.grade.includes("all") ? "Barchasi" : c.grade.map((g) => `${g}-sinf`).join(", ")) : `${c.grade}-sinf`}`,
             href: `/dashboard/lessons/${c._id}`,
             icon: BookOpen,
             iconColor: "text-emerald-600",
@@ -102,7 +102,7 @@ export default function GlobalSearch({ open, onClose }: { open: boolean; onClose
           items.push({
             type: "course",
             title: c.title,
-            subtitle: `${c.lessons.length} dars · ${c.grade}-sinf`,
+            subtitle: `${c.lessons.length} dars · ${Array.isArray(c.grade) ? (c.grade.includes("all") ? "Barchasi" : c.grade.map((g) => `${g}-sinf`).join(", ")) : `${c.grade}-sinf`}`,
             href: `/dashboard/lessons/${c._id}`,
             icon: BookOpen,
             iconColor: "text-emerald-600",

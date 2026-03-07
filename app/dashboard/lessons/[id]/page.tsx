@@ -761,7 +761,7 @@ export default function CourseViewPage() {
           <h1 className="text-xl md:text-3xl font-bold text-[var(--foreground)] tracking-tight truncate" style={{ fontFamily: "var(--font-display)" }}>{course.title}</h1>
           <div className="flex items-center gap-2 md:gap-3 mt-1">
             <span className="text-[11px] md:text-xs font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-lg bg-[var(--green-50)] text-[var(--green-600)]">
-              {course.grade === "all" ? "Barcha sinflar" : `${course.grade}-sinf`}
+              {Array.isArray(course.grade) ? (course.grade.includes("all") ? "Barcha sinflar" : course.grade.map((g) => `${g}-sinf`).join(", ")) : (course.grade === "all" ? "Barcha sinflar" : `${course.grade}-sinf`)}
             </span>
             <span className="text-xs md:text-sm text-[var(--foreground)]/35">{course.lessons.length} dars</span>
           </div>
