@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useCourse, type ContentBlock } from "../../../lib/courses";
-import { useProgress, useCompleteLesson, useSubmitQuiz, useSubmitInteractive } from "../../../lib/progress";
+import { useProgress, useCompleteLesson, useSubmitQuiz, useSubmitInteractive, useCheckPair } from "../../../lib/progress";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -437,8 +437,12 @@ function MatchWordsBlock({ block, courseId, lessonId, progress, submitInteractiv
     return arr;
   }, [pairs]);
 
-  const checkPair = (left: string, right: string) => {
-    const isCorrect = pairs.some(p => p.left === left && p.right === right);
+  const checkPairApi = useCheckPair();
+  const checkPair = async (left: string, right: string) => {
+    let isCorrect = false;
+    try {
+      ({ correct: isCorrect } = await checkPairApi.mutateAsync({ courseId, lessonId, contentId: block._id, left, right }));
+    } catch { /* treat as wrong */ }
     if (isCorrect) {
       playPop();
       const newMatched = [...matched, { left, right }];
@@ -459,12 +463,12 @@ function MatchWordsBlock({ block, courseId, lessonId, progress, submitInteractiv
     }
   };
   const handleLeftClick = (left: string) => {
-    if (isLeftMatched(left) || wrongPair) return;
+    if (isLeftMatched(left) || wrongPair || checkPairApi.isPending) return;
     setSelectedLeft(left);
     if (selectedRight) checkPair(left, selectedRight);
   };
   const handleRightClick = (right: string) => {
-    if (isRightMatched(right) || wrongPair) return;
+    if (isRightMatched(right) || wrongPair || checkPairApi.isPending) return;
     setSelectedRight(right);
     if (selectedLeft) checkPair(selectedLeft, right);
   };

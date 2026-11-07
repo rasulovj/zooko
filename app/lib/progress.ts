@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import api from "./api";
 
 export type Badge = {
@@ -88,6 +88,23 @@ export function useCompleteLesson() {
   });
 }
 
+// The server hides answers until a block is answered; once it is, the submit
+// response carries the full block so the lesson can show the correct answer.
+function revealAnsweredBlock(
+  qc: QueryClient,
+  { courseId, lessonId, contentId }: { courseId: string; lessonId: string; contentId: string },
+  block: any,
+) {
+  if (!block) return;
+  qc.setQueryData(["course", courseId], (course: any) => course && ({
+    ...course,
+    lessons: course.lessons.map((l: any) => l._id !== lessonId ? l : ({
+      ...l,
+      content: l.content.map((c: any) => c._id === contentId ? block : c),
+    })),
+  }));
+}
+
 export function useSubmitQuiz() {
   const qc = useQueryClient();
   return useMutation({
@@ -95,7 +112,10 @@ export function useSubmitQuiz() {
       const { data } = await api.post("/progress/submit-quiz", payload);
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["progress"] }),
+    onSuccess: (data, vars) => {
+      revealAnsweredBlock(qc, vars, data?.block);
+      qc.invalidateQueries({ queryKey: ["progress"] });
+    },
   });
 }
 
@@ -106,7 +126,19 @@ export function useSubmitInteractive() {
       const { data } = await api.post("/progress/submit-interactive", payload);
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["progress"] }),
+    onSuccess: (data, vars) => {
+      revealAnsweredBlock(qc, vars, data?.block);
+      qc.invalidateQueries({ queryKey: ["progress"] });
+    },
+  });
+}
+
+export function useCheckPair() {
+  return useMutation({
+    mutationFn: async (payload: { courseId: string; lessonId: string; contentId: string; left: string; right: string }) => {
+      const { data } = await api.post("/progress/check-pair", payload);
+      return data as { correct: boolean };
+    },
   });
 }
 
